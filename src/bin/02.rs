@@ -11,9 +11,7 @@ pub fn part_two(input: &str) -> Option<u32> {
 fn calc_score(input: &str, score_map: HashMap<String, u32>) -> Option<u32> {
     let mut score_sum: u32 = 0;
     for line in input.lines() {
-        let key = line.replace(" ", "");
-
-        score_sum += score_map[&key];
+        score_sum += score_map[line];
     }
 
     Some(score_sum)
@@ -22,15 +20,15 @@ fn calc_score(input: &str, score_map: HashMap<String, u32>) -> Option<u32> {
 fn init_mappings1() -> HashMap<String, u32> {
     let mut score_map: HashMap<String, u32> = HashMap::new();
 
-    score_map.insert("AX".to_string(), 3+1); // 3+1 = score for tying + score for playing rock
-    score_map.insert("AY".to_string(), 6+2);
-    score_map.insert("AZ".to_string(), 0+3);
-    score_map.insert("BX".to_string(), 0+1);
-    score_map.insert("BY".to_string(), 3+2);
-    score_map.insert("BZ".to_string(), 6+3);
-    score_map.insert("CX".to_string(), 6+1);
-    score_map.insert("CY".to_string(), 0+2);
-    score_map.insert("CZ".to_string(), 3+3);
+    score_map.insert("A X".to_string(), 3+1); // 3+1 = score for tying + score for playing rock
+    score_map.insert("A Y".to_string(), 6+2);
+    score_map.insert("A Z".to_string(), 0+3);
+    score_map.insert("B X".to_string(), 0+1);
+    score_map.insert("B Y".to_string(), 3+2);
+    score_map.insert("B Z".to_string(), 6+3);
+    score_map.insert("C X".to_string(), 6+1);
+    score_map.insert("C Y".to_string(), 0+2);
+    score_map.insert("C Z".to_string(), 3+3);
 
     score_map
 }
@@ -38,15 +36,15 @@ fn init_mappings1() -> HashMap<String, u32> {
 fn init_mappings2() -> HashMap<String, u32> {
     let mut score_map: HashMap<String, u32> = HashMap::new();
 
-    score_map.insert("AX".to_string(), 0+3); // 0+3 = score for losing + score for playing scissors
-    score_map.insert("AY".to_string(), 3+1);
-    score_map.insert("AZ".to_string(), 6+2);
-    score_map.insert("BX".to_string(), 0+1);
-    score_map.insert("BY".to_string(), 3+2);
-    score_map.insert("BZ".to_string(), 6+3);
-    score_map.insert("CX".to_string(), 0+2);
-    score_map.insert("CY".to_string(), 3+3);
-    score_map.insert("CZ".to_string(), 6+1);
+    score_map.insert("A X".to_string(), 0+3); // 0+3 = score for losing + score for playing scissors
+    score_map.insert("A Y".to_string(), 3+1);
+    score_map.insert("A Z".to_string(), 6+2);
+    score_map.insert("B X".to_string(), 0+1);
+    score_map.insert("B Y".to_string(), 3+2);
+    score_map.insert("B Z".to_string(), 6+3);
+    score_map.insert("C X".to_string(), 0+2);
+    score_map.insert("C Y".to_string(), 3+3);
+    score_map.insert("C Z".to_string(), 6+1);
 
     score_map
 }
