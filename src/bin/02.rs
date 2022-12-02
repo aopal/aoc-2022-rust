@@ -1,4 +1,4 @@
-use std::{collections::HashMap};
+use std::collections::HashMap;
 
 pub fn part_one(input: &str) -> Option<u32> {
     calc_score(input, init_mappings1())
@@ -49,10 +49,30 @@ fn init_mappings2() -> HashMap<String, u32> {
     score_map
 }
 
+pub fn part_one_mod(input: &str) -> Option<u32> {
+    let mut score_sum: u32 = 0;
+
+    for line in input.lines() {
+        // 65 is the ASCII offset of A, 88 is the offset of X
+        let opponent_char = line.chars().nth(0).unwrap() as i32 - 65;
+        let player_char = line.chars().nth(2).unwrap() as i32 - 23 - 65;
+
+        let win_mod: i32 = ((player_char - opponent_char + 4) % 3 - 1) * 3 + 3;
+        score_sum += (player_char + 1 + win_mod) as u32;
+    }
+
+    Some(score_sum)
+}
+
+// pub fn part_two_mod(input: &str) -> Option<u32> {
+//     calc_score(input, init_mappings1())
+// }
+
 fn main() {
     let input = &advent_of_code::read_file("inputs", 2);
     advent_of_code::solve!(1, part_one, input);
     advent_of_code::solve!(2, part_two, input);
+    advent_of_code::solve!(1, part_one_mod, input);
 }
 
 #[cfg(test)]
