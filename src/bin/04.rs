@@ -19,8 +19,8 @@ impl SectionAssignment {
     }
 
     fn intersects(&self, other: &SectionAssignment) -> bool {
-        (self.low >= other.low && self.low <= other.high) ||
-        (self.high >= other.low && self.low <= other.high)
+        (self.low >= other.low && self.low <= other.high)
+            || (self.high >= other.low && self.low <= other.high)
     }
 }
 
@@ -33,7 +33,7 @@ pub fn part_one(input: &str) -> Option<u32> {
         let assignment1 = SectionAssignment::new_from_str(String::from(assignments[0]));
         let assignment2 = SectionAssignment::new_from_str(String::from(assignments[1]));
 
-        if assignment1.contains(&assignment2) ||  assignment2.contains(&assignment1) {
+        if assignment1.contains(&assignment2) || assignment2.contains(&assignment1) {
             sum += 1;
         }
     }
