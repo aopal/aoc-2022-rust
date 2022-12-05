@@ -1,6 +1,12 @@
 use std::collections::VecDeque;
 use std::fmt;
 
+struct Command {
+    n: u32,
+    from: usize,
+    to: usize,
+}
+
 #[derive(Debug)]
 struct Stack {
     data: VecDeque<char>,
@@ -109,6 +115,13 @@ impl ShippingYard {
 
         tops
     }
+
+    fn print_tops(&self) {
+        for c in self.read_tops() {
+            print!("{}", c);
+        }
+        print!("\n");
+    }
 }
 
 impl fmt::Display for ShippingYard {
@@ -122,49 +135,38 @@ impl fmt::Display for ShippingYard {
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let mut lines = input.lines();
-    let mut yard_input = Vec::<String>::new();
-    let mut yard = ShippingYard::new();
+    let (mut yard, commands) = parse_input(input);
 
-    loop {
-        let line = lines.next().unwrap();
-        if line.len() == 0 {
-            break;
-        }
-
-        yard_input.push(String::from(line))
+    for cmd in commands.iter() {
+        yard.move_n(cmd.n, cmd.from, cmd.to);
     }
 
-    yard.init(yard_input);
-    println!("start:\n{}", yard);
+    yard.print_tops();
 
-    loop {
-        let l = lines.next();
-        if l.is_none() {
-            break;
-        }
-
-        let cmd: Vec<&str> = l.unwrap().split(" ").collect();
-        let n = str::parse::<u32>(cmd[0]).unwrap();
-        let from = str::parse::<usize>(cmd[1]).unwrap();
-        let to = str::parse::<usize>(cmd[2]).unwrap();
-
-        yard.move_n(n, from - 1, to - 1);
-    }
-    println!("end:\n{}", yard);
-
-    for c in yard.read_tops() {
-        print!("{}", c);
-    }
-    print!("\n");
-
-    None
+    Some(1)
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
+    let (mut yard, commands) = parse_input(input);
+    // println!("start:\n{}", yard);
+
+    for cmd in commands.iter() {
+        yard.move_n_reverse(cmd.n, cmd.from, cmd.to);
+    }
+
+    // println!("end:\n{}", yard);
+
+    yard.print_tops();
+
+    Some(1)
+}
+
+fn parse_input(input: &str) -> (ShippingYard, Vec<Command>) {
+    let mut yard = ShippingYard::new();
+    let mut commands = Vec::<Command>::new();
+
     let mut lines = input.lines();
     let mut yard_input = Vec::<String>::new();
-    let mut yard = ShippingYard::new();
 
     loop {
         let line = lines.next().unwrap();
@@ -176,7 +178,6 @@ pub fn part_two(input: &str) -> Option<u32> {
     }
 
     yard.init(yard_input);
-    println!("start:\n{}", yard);
 
     loop {
         let l = lines.next();
@@ -189,16 +190,14 @@ pub fn part_two(input: &str) -> Option<u32> {
         let from = str::parse::<usize>(cmd[1]).unwrap();
         let to = str::parse::<usize>(cmd[2]).unwrap();
 
-        yard.move_n_reverse(n, from - 1, to - 1);
+        commands.push(Command {
+            n: n,
+            from: from - 1,
+            to: to - 1,
+        })
     }
-    println!("end:\n{}", yard);
 
-    for c in yard.read_tops() {
-        print!("{}", c);
-    }
-    print!("\n");
-
-    None
+    (yard, commands)
 }
 
 fn main() {
@@ -213,13 +212,13 @@ mod tests {
 
     #[test]
     fn test_part_one() {
-        let input = advent_of_code::read_file("examples", 35);
+        let input = advent_of_code::read_file("examples", 5);
         assert_eq!(part_one(&input), None);
     }
 
     #[test]
     fn test_part_two() {
-        let input = advent_of_code::read_file("examples", 35);
+        let input = advent_of_code::read_file("examples", 5);
         assert_eq!(part_two(&input), None);
     }
 }
