@@ -24,14 +24,17 @@ pub fn part_one(input: &str) -> Option<u32> {
 pub fn part_two(input: &str) -> Option<u32> {
     let elves: Vec<&str> = input.split("\n\n").collect();
 
-    let mut sums: Vec<u32> = elves.into_iter().map(|elf| {
-        let cals = elf.lines();
-        let mut curr_sum: u32 = 0;
-        for cal in cals {
-            curr_sum += cal.parse::<u32>().unwrap()
-        }
-        curr_sum
-    }).collect();
+    let mut sums: Vec<u32> = elves
+        .into_iter()
+        .map(|elf| {
+            let cals = elf.lines();
+            let mut curr_sum: u32 = 0;
+            for cal in cals {
+                curr_sum += cal.parse::<u32>().unwrap()
+            }
+            curr_sum
+        })
+        .collect();
 
     sums.sort_by(|a, b| b.cmp(a));
 
