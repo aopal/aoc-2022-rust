@@ -31,7 +31,10 @@ macro_rules! solve {
                     );
                 }
                 None => {
-                    println!("not solved.")
+                    println!(
+                        "not solved. {}(elapsed: {:.2?}){}",
+                        ANSI_ITALIC, elapsed, ANSI_RESET
+                    );
                 }
             }
         }

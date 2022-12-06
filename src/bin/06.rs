@@ -1,11 +1,62 @@
 use std::collections::HashSet;
+use std::collections::HashMap;
+use std::collections::VecDeque;
+
+#[derive(Debug)]
+struct UniqueSet {
+    num_chars_duplicated: u32,
+    ref_counts: HashMap<char, u32>,
+    queue: VecDeque<char>,
+    size: usize,
+}
+
+impl UniqueSet {
+    fn new(size: usize) -> Self {
+        Self {
+            num_chars_duplicated: 0,
+            ref_counts: HashMap::<char, u32>::new(),
+            queue: VecDeque::<char>::new(),
+            size: size,
+        }
+    }
+
+    fn all_unique(&self) -> bool {
+        if self.queue.len() < self.size {
+            false
+        } else {
+            self.num_chars_duplicated == 0
+        }
+    }
+
+    fn insert(&mut self, c: char) -> bool {
+        self.queue.push_back(c);
+        self.ref_counts.entry(c).and_modify(|count| *count += 1).or_insert(1);
+
+        // if this insertion moved the reference count up from 1
+        if self.ref_counts[&c] == 2 {
+            self.num_chars_duplicated += 1
+        }
+
+        if self.queue.len() > self.size {
+            let c_removed = self.queue.pop_front().unwrap();
+            self.ref_counts.entry(c_removed).and_modify(|count| *count -= 1);
+
+            // if this deletion moved the reference count down to 1
+            if self.ref_counts[&c_removed] == 1 {
+                self.num_chars_duplicated -= 1;
+            }
+        }
+
+        self.all_unique()
+    }
+}
 
 pub fn part_one(input: &str) -> Option<u32> {
-    idx_first_n_unique(input, 4)
+    idx_first_n_unique_fast(input, 4)
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    idx_first_n_unique(input, 14)
+    idx_first_n_unique_fast(input, 14)
 }
 
 fn idx_first_n_unique(input: &str, n: usize) -> Option<u32> {
@@ -41,6 +92,17 @@ fn all_unique(chars: &Vec<char>, n: &usize) -> bool {
     }
 
     true
+}
+
+fn idx_first_n_unique_fast(input: &str, n: usize) -> Option<u32> {
+    let mut set = UniqueSet::new(n);
+
+    for (i, c) in input.chars().enumerate() {
+        if set.insert(c) {
+            return Some((i+1) as u32)
+        }
+    }
+    None
 }
 
 fn main() {
