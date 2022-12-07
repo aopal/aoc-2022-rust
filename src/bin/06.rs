@@ -59,6 +59,42 @@ pub fn part_two(input: &str) -> Option<u32> {
     idx_first_n_unique_fast(input, 14)
 }
 
+fn idx_first_n_unique_fast(input: &str, n: usize) -> Option<u32> {
+    let mut set = UniqueSet::new(n);
+
+    for (i, c) in input.chars().enumerate() {
+        if set.insert(c) {
+            return Some((i+1) as u32)
+        }
+    }
+    None
+}
+
+fn main() {
+    let input = &advent_of_code::read_file("inputs", 6);
+    advent_of_code::solve!(1, part_one, input);
+    advent_of_code::solve!(2, part_two, input);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_part_one() {
+        let input = advent_of_code::read_file("examples", 6);
+        assert_eq!(part_one(&input), None);
+    }
+
+    #[test]
+    fn test_part_two() {
+        let input = advent_of_code::read_file("examples", 6);
+        assert_eq!(part_two(&input), None);
+    }
+}
+
+
+// old solution
 fn idx_first_n_unique(input: &str, n: usize) -> Option<u32> {
     let mut last_n_chars = Vec::<char>::with_capacity(n);
     for _ in 0..n {
@@ -92,38 +128,4 @@ fn all_unique(chars: &Vec<char>, n: &usize) -> bool {
     }
 
     true
-}
-
-fn idx_first_n_unique_fast(input: &str, n: usize) -> Option<u32> {
-    let mut set = UniqueSet::new(n);
-
-    for (i, c) in input.chars().enumerate() {
-        if set.insert(c) {
-            return Some((i+1) as u32)
-        }
-    }
-    None
-}
-
-fn main() {
-    let input = &advent_of_code::read_file("inputs", 6);
-    advent_of_code::solve!(1, part_one, input);
-    advent_of_code::solve!(2, part_two, input);
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_part_one() {
-        let input = advent_of_code::read_file("examples", 6);
-        assert_eq!(part_one(&input), None);
-    }
-
-    #[test]
-    fn test_part_two() {
-        let input = advent_of_code::read_file("examples", 6);
-        assert_eq!(part_two(&input), None);
-    }
 }
