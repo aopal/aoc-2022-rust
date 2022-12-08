@@ -1,5 +1,5 @@
-use std::collections::HashSet;
 use std::collections::HashMap;
+use std::collections::HashSet;
 use std::collections::VecDeque;
 
 #[derive(Debug)]
@@ -30,7 +30,10 @@ impl UniqueSet {
 
     fn insert(&mut self, c: char) -> bool {
         self.queue.push_back(c);
-        self.ref_counts.entry(c).and_modify(|count| *count += 1).or_insert(1);
+        self.ref_counts
+            .entry(c)
+            .and_modify(|count| *count += 1)
+            .or_insert(1);
 
         // if this insertion moved the reference count up from 1
         if self.ref_counts[&c] == 2 {
@@ -39,7 +42,9 @@ impl UniqueSet {
 
         if self.queue.len() > self.size {
             let c_removed = self.queue.pop_front().unwrap();
-            self.ref_counts.entry(c_removed).and_modify(|count| *count -= 1);
+            self.ref_counts
+                .entry(c_removed)
+                .and_modify(|count| *count -= 1);
 
             // if this deletion moved the reference count down to 1
             if self.ref_counts[&c_removed] == 1 {
@@ -59,21 +64,36 @@ pub fn part_two(input: &str) -> Option<u32> {
     idx_first_n_unique_fast(input, 14)
 }
 
+pub fn part_one_slow(input: &str) -> Option<u32> {
+    idx_first_n_unique(input, 4)
+}
+
+pub fn part_two_slow(input: &str) -> Option<u32> {
+    idx_first_n_unique(input, 14)
+}
+
 fn idx_first_n_unique_fast(input: &str, n: usize) -> Option<u32> {
     let mut set = UniqueSet::new(n);
 
     for (i, c) in input.chars().enumerate() {
         if set.insert(c) {
-            return Some((i+1) as u32)
+            return Some((i + 1) as u32);
         }
     }
     None
 }
 
 fn main() {
-    let input = &advent_of_code::read_file("inputs", 6);
-    advent_of_code::solve!(1, part_one, input);
-    advent_of_code::solve!(2, part_two, input);
+    let input_4 = &advent_of_code::read_file("inputs", 46);
+    let input_14 = &advent_of_code::read_file("inputs", 56);
+
+    println!("original implementation");
+    advent_of_code::solve!(1, part_one_slow, input_4);
+    advent_of_code::solve!(2, part_two_slow, input_14);
+
+    println!("\nsped up implementation");
+    advent_of_code::solve!(1, part_one, input_4);
+    advent_of_code::solve!(2, part_two, input_14);
 }
 
 #[cfg(test)]
@@ -93,7 +113,6 @@ mod tests {
     }
 }
 
-
 // old solution
 fn idx_first_n_unique(input: &str, n: usize) -> Option<u32> {
     let mut last_n_chars = Vec::<char>::with_capacity(n);
@@ -102,10 +121,10 @@ fn idx_first_n_unique(input: &str, n: usize) -> Option<u32> {
     }
 
     for (i, c) in input.chars().enumerate() {
-        last_n_chars[i%n] = c;
+        last_n_chars[i % n] = c;
 
         if all_unique(&last_n_chars, &n) {
-            return Some((i + 1) as u32)
+            return Some((i + 1) as u32);
         }
     }
 
@@ -113,15 +132,15 @@ fn idx_first_n_unique(input: &str, n: usize) -> Option<u32> {
 }
 
 fn all_unique(chars: &Vec<char>, n: &usize) -> bool {
-    if chars[n-1] == ' ' {
-        return false
+    if chars[n - 1] == ' ' {
+        return false;
     }
 
     let mut charset = HashSet::<char>::new();
 
     for c in chars.into_iter() {
         if charset.contains(c) {
-            return false
+            return false;
         }
 
         charset.insert(*c);
