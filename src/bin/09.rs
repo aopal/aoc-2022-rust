@@ -42,6 +42,41 @@ impl Instruction {
     }
 }
 
+pub fn part_one(input: &str) -> Option<u32> {
+    let mut points_visited = HashSet::<(i32,i32)>::new();
+    let mut head_pos = (0,0);
+    let mut old_head_pos;
+    let mut tail_pos = (0,0);
+    points_visited.insert(tail_pos);
+
+    for line in input.lines() {
+        let mut instr = Instruction::from_str(line).unwrap();
+
+        loop {
+            let vec_opt = instr.consume();
+            if vec_opt.is_none() {
+                break
+            }
+
+            let head_vel = vec_opt.unwrap();
+            old_head_pos = head_pos;
+
+            head_pos.0 += head_vel.0;
+            head_pos.1 += head_vel.1;
+
+            // head and tail non-adjacent
+            if (head_pos.0 - tail_pos.0).abs() > 1 ||
+                (head_pos.1 - tail_pos.1).abs() > 1 {
+                    tail_pos = old_head_pos;
+            }
+
+            points_visited.insert(tail_pos);
+        }
+    }
+
+    Some(points_visited.len() as u32)
+}
+
 pub fn part_two(input: &str) -> Option<u32> {
     let mut points_visited = HashSet::<(i32,i32)>::new();
 
@@ -97,41 +132,6 @@ pub fn part_two(input: &str) -> Option<u32> {
             }
 
             points_visited.insert(positions[tail_idx]);
-        }
-    }
-
-    Some(points_visited.len() as u32)
-}
-
-pub fn part_one(input: &str) -> Option<u32> {
-    let mut points_visited = HashSet::<(i32,i32)>::new();
-    let mut head_pos = (0,0);
-    let mut old_head_pos;
-    let mut tail_pos = (0,0);
-    points_visited.insert(tail_pos);
-
-    for line in input.lines() {
-        let mut instr = Instruction::from_str(line).unwrap();
-
-        loop {
-            let vec_opt = instr.consume();
-            if vec_opt.is_none() {
-                break
-            }
-
-            let head_vel = vec_opt.unwrap();
-            old_head_pos = head_pos;
-
-            head_pos.0 += head_vel.0;
-            head_pos.1 += head_vel.1;
-
-            // head and tail non-adjacent
-            if (head_pos.0 - tail_pos.0).abs() > 1 ||
-                (head_pos.1 - tail_pos.1).abs() > 1 {
-                    tail_pos = old_head_pos;
-            }
-
-            points_visited.insert(tail_pos);
         }
     }
 
