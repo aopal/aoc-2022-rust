@@ -42,47 +42,13 @@ impl Instruction {
     }
 }
 
-pub fn part_one(input: &str) -> Option<u32> {
-    let mut points_visited = HashSet::<(i32,i32)>::new();
-    let mut head_pos = (0,0);
-    let mut old_head_pos;
-    let mut tail_pos = (0,0);
-    points_visited.insert(tail_pos);
-
-    for line in input.lines() {
-        let mut instr = Instruction::from_str(line).unwrap();
-
-        loop {
-            let vec_opt = instr.consume();
-            if vec_opt.is_none() {
-                break
-            }
-
-            let head_vel = vec_opt.unwrap();
-            old_head_pos = head_pos;
-
-            head_pos.0 += head_vel.0;
-            head_pos.1 += head_vel.1;
-
-            // head and tail non-adjacent
-            if (head_pos.0 - tail_pos.0).abs() > 1 ||
-                (head_pos.1 - tail_pos.1).abs() > 1 {
-                    tail_pos = old_head_pos;
-            }
-
-            points_visited.insert(tail_pos);
-        }
-    }
-
-    Some(points_visited.len() as u32)
-}
-
-pub fn part_two(input: &str) -> Option<u32> {
+fn simulate_rope(input: &str, n: usize) -> Option<u32> {
     let mut points_visited = HashSet::<(i32,i32)>::new();
 
-    let mut positions: [(i32,i32); 10] = [(0,0); 10];
-    let mut prev_positions: [(i32,i32); 10] = [(0,0); 10];
-    let tail_idx = 9;
+    let mut positions = Vec::<(i32,i32)>::new();
+    positions.resize_with(n, Default::default);
+
+    let tail_idx = n-1;
     points_visited.insert(positions[tail_idx]);
 
     for line in input.lines() {
@@ -95,14 +61,11 @@ pub fn part_two(input: &str) -> Option<u32> {
             }
 
             let head_vel = vec_opt.unwrap();
-            for i in 0..10 {
-                prev_positions[i] = positions[i];
-            }
 
             positions[0].0 += head_vel.0;
             positions[0].1 += head_vel.1;
 
-            for i in 1..10 {
+            for i in 1..n {
                 let mut vec_del = (
                     positions[i-1].0 - positions[i].0,
                     positions[i-1].1 - positions[i].1,
@@ -136,6 +99,15 @@ pub fn part_two(input: &str) -> Option<u32> {
     }
 
     Some(points_visited.len() as u32)
+
+}
+
+pub fn part_one(input: &str) -> Option<u32> {
+    simulate_rope(input, 2)
+}
+
+pub fn part_two(input: &str) -> Option<u32> {
+    simulate_rope(input, 10)
 }
 
 fn main() {
