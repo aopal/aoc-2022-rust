@@ -48,7 +48,7 @@ pub fn part_two(input: &str) -> Option<u32> {
         count_chars(&l3, &mut char_map3);
 
         let mut added_to_sum = false;
-        for i in (1..53) {
+        for i in 1..53 {
             if char_map1[i] == 1 && char_map2[i] == 1 && char_map3[i] == 1 {
                 pri_sum += i as u32;
                 added_to_sum = true

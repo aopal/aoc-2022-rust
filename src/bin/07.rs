@@ -17,7 +17,7 @@ struct Node {
 }
 
 impl Node {
-    fn new_dir(name: String,index: usize) -> Self {
+    fn new_dir(name: String, index: usize) -> Self {
         Self {
             kind: NodeType::Dir,
             name: name,

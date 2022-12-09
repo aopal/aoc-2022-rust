@@ -1,6 +1,6 @@
 use std::collections::HashSet;
-use std::str::FromStr;
 use std::num::ParseIntError;
+use std::str::FromStr;
 
 struct Instruction {
     steps_remaining: u32,
@@ -14,25 +14,24 @@ impl FromStr for Instruction {
         let (dir, n) = s.split_once(' ').unwrap();
 
         let steps = n.parse::<u32>().unwrap();
-        let vec: (i32,i32);
+        let vec: (i32, i32);
         vec = match dir {
-            "R" => (1,0),
+            "R" => (1, 0),
             "L" => (-1, 0),
-            "U" => (0,-1),
-            "D" => (0,1),
-            _ => (0,0)
+            "U" => (0, -1),
+            "D" => (0, 1),
+            _ => (0, 0),
         };
-
 
         Ok(Instruction {
             steps_remaining: steps,
-            velocity: vec
+            velocity: vec,
         })
     }
 }
 
 impl Instruction {
-    fn consume(&mut self) -> Option<(i32,i32)> {
+    fn consume(&mut self) -> Option<(i32, i32)> {
         if self.steps_remaining == 0 {
             None
         } else {
@@ -43,12 +42,12 @@ impl Instruction {
 }
 
 fn simulate_rope(input: &str, n: usize) -> Option<u32> {
-    let mut points_visited = HashSet::<(i32,i32)>::new();
+    let mut points_visited = HashSet::<(i32, i32)>::new();
 
-    let mut positions = Vec::<(i32,i32)>::new();
+    let mut positions = Vec::<(i32, i32)>::new();
     positions.resize_with(n, Default::default);
 
-    let tail_idx = n-1;
+    let tail_idx = n - 1;
     points_visited.insert(positions[tail_idx]);
 
     for line in input.lines() {
@@ -57,7 +56,7 @@ fn simulate_rope(input: &str, n: usize) -> Option<u32> {
         loop {
             let vec_opt = instr.consume();
             if vec_opt.is_none() {
-                break
+                break;
             }
 
             let head_vel = vec_opt.unwrap();
@@ -67,8 +66,8 @@ fn simulate_rope(input: &str, n: usize) -> Option<u32> {
 
             for i in 1..n {
                 let mut vec_del = (
-                    positions[i-1].0 - positions[i].0,
-                    positions[i-1].1 - positions[i].1,
+                    positions[i - 1].0 - positions[i].0,
+                    positions[i - 1].1 - positions[i].1,
                 );
 
                 // if points are adjacent or overlapping
@@ -99,7 +98,6 @@ fn simulate_rope(input: &str, n: usize) -> Option<u32> {
     }
 
     Some(points_visited.len() as u32)
-
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
