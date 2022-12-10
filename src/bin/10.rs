@@ -35,9 +35,9 @@ pub fn part_two(input: &str) -> Option<u32> {
     let vals = calc_x_vals(input);
 
     for (i, v) in vals.iter().enumerate() {
-        let mut c = '.';
+        let mut c = '⬛';
         if (i as i32 % 40 - v).abs() <= 1 {
-            c = '#';
+            c = '⬜';
         }
 
         print!("{}", c);
