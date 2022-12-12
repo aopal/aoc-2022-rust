@@ -1,17 +1,16 @@
 use std::collections::{HashMap, VecDeque};
 use num_traits::identities::Zero;
-use num_bigint::BigInt;
 
 #[derive(Debug)]
 struct Monkey  {
     n_inspected: u32,
-    items: VecDeque<BigInt>,
-    operation: fn(BigInt) -> BigInt,
-    throw: fn(BigInt) -> usize
+    items: VecDeque<i64>,
+    operation: fn(i64) -> i64,
+    throw: fn(i64) -> usize
 }
 
 impl Monkey {
-    fn inspect(&mut self, part: u32) -> Option<(BigInt, usize)> {
+    fn inspect(&mut self, part: u32) -> Option<(i64, usize)> {
         let mut item = self.items.pop_front();
         if item.is_none() {
             return None;
@@ -38,10 +37,10 @@ fn init_sample() -> Vec<Monkey>  {
     vec![
         Monkey {
             n_inspected: 0,
-            items: VecDeque::from([BigInt::from(79), BigInt::from(98)]),
-            operation: |x: BigInt| -> BigInt { x * 19 },
-            throw: |x: BigInt| -> usize {
-                if ((x % 23) as BigInt).is_zero() {
+            items: VecDeque::from([i64::from(79), i64::from(98)]),
+            operation: |x: i64| -> i64 { x * 19 },
+            throw: |x: i64| -> usize {
+                if ((x % 23) as i64).is_zero() {
                     2
                 } else {
                     3
@@ -50,10 +49,10 @@ fn init_sample() -> Vec<Monkey>  {
         },
         Monkey {
             n_inspected: 0,
-            items: VecDeque::from([BigInt::from(54), BigInt::from(65), BigInt::from(75), BigInt::from(74)]),
-            operation: |x: BigInt| -> BigInt { x + 6 },
-            throw: |x: BigInt| -> usize {
-                if ((x % 19) as BigInt).is_zero() {
+            items: VecDeque::from([i64::from(54), i64::from(65), i64::from(75), i64::from(74)]),
+            operation: |x: i64| -> i64 { x + 6 },
+            throw: |x: i64| -> usize {
+                if ((x % 19) as i64).is_zero() {
                     2
                 } else {
                     0
@@ -62,10 +61,10 @@ fn init_sample() -> Vec<Monkey>  {
         },
         Monkey {
             n_inspected: 0,
-            items: VecDeque::from([BigInt::from(79), BigInt::from(60), BigInt::from(97)]),
-            operation: |x: BigInt| -> BigInt { x.pow(2) },
-            throw: |x: BigInt| -> usize {
-                if ((x % 13) as BigInt).is_zero() {
+            items: VecDeque::from([i64::from(79), i64::from(60), i64::from(97)]),
+            operation: |x: i64| -> i64 { x.pow(2) },
+            throw: |x: i64| -> usize {
+                if ((x % 13) as i64).is_zero() {
                     1
                 } else {
                     3
@@ -74,10 +73,10 @@ fn init_sample() -> Vec<Monkey>  {
         },
         Monkey {
             n_inspected: 0,
-            items: VecDeque::from([BigInt::from(74)]),
-            operation: |x: BigInt| -> BigInt { x + 3 },
-            throw: |x: BigInt| -> usize {
-                if ((x % 17) as BigInt).is_zero() {
+            items: VecDeque::from([i64::from(74)]),
+            operation: |x: i64| -> i64 { x + 3 },
+            throw: |x: i64| -> usize {
+                if ((x % 17) as i64).is_zero() {
                     0
                 } else {
                     1
@@ -93,10 +92,10 @@ fn init() -> Vec<Monkey> {
     v = vec![
         Monkey {
             n_inspected: 0,
-            items: VecDeque::from([BigInt::from(50), BigInt::from(70), BigInt::from(54), BigInt::from(83), BigInt::from(52), BigInt::from(78)]),
-            operation: |x: BigInt| -> BigInt { x * 3 },
-            throw: |x: BigInt| -> usize {
-                if ((x % 11) as BigInt).is_zero() {
+            items: VecDeque::from([i64::from(50), i64::from(70), i64::from(54), i64::from(83), i64::from(52), i64::from(78)]),
+            operation: |x: i64| -> i64 { x * 3 },
+            throw: |x: i64| -> usize {
+                if ((x % 11) as i64).is_zero() {
                     2
                 } else {
                     7
@@ -105,10 +104,10 @@ fn init() -> Vec<Monkey> {
         },
         Monkey {
             n_inspected: 0,
-            items: VecDeque::from([BigInt::from(71), BigInt::from(52), BigInt::from(58), BigInt::from(60), BigInt::from(71)]),
-            operation: |x: BigInt| -> BigInt { x.pow(2) },
-            throw: |x: BigInt| -> usize {
-                if ((x % 7) as BigInt).is_zero() {
+            items: VecDeque::from([i64::from(71), i64::from(52), i64::from(58), i64::from(60), i64::from(71)]),
+            operation: |x: i64| -> i64 { x.pow(2) },
+            throw: |x: i64| -> usize {
+                if ((x % 7) as i64).is_zero() {
                     0
                 } else {
                     2
@@ -117,10 +116,10 @@ fn init() -> Vec<Monkey> {
         },
         Monkey {
             n_inspected: 0,
-            items: VecDeque::from([BigInt::from(66), BigInt::from(56), BigInt::from(56), BigInt::from(94), BigInt::from(60), BigInt::from(86), BigInt::from(73)]),
-            operation: |x: BigInt| -> BigInt { x + 1 },
-            throw: |x: BigInt| -> usize {
-                if ((x % 3) as BigInt).is_zero() {
+            items: VecDeque::from([i64::from(66), i64::from(56), i64::from(56), i64::from(94), i64::from(60), i64::from(86), i64::from(73)]),
+            operation: |x: i64| -> i64 { x + 1 },
+            throw: |x: i64| -> usize {
+                if ((x % 3) as i64).is_zero() {
                     7
                 } else {
                     5
@@ -129,10 +128,10 @@ fn init() -> Vec<Monkey> {
         },
         Monkey {
             n_inspected: 0,
-            items: VecDeque::from([BigInt::from(83), BigInt::from(99)]),
-            operation: |x: BigInt| -> BigInt { x + 8 },
-            throw: |x: BigInt| -> usize {
-                if ((x % 5) as BigInt).is_zero() {
+            items: VecDeque::from([i64::from(83), i64::from(99)]),
+            operation: |x: i64| -> i64 { x + 8 },
+            throw: |x: i64| -> usize {
+                if ((x % 5) as i64).is_zero() {
                     6
                 } else {
                     4
@@ -141,10 +140,10 @@ fn init() -> Vec<Monkey> {
         },
         Monkey {
             n_inspected: 0,
-            items: VecDeque::from([BigInt::from(98), BigInt::from(98), BigInt::from(79)]),
-            operation: |x: BigInt| -> BigInt { x + 3 },
-            throw: |x: BigInt| -> usize {
-                if ((x % 17) as BigInt).is_zero(){
+            items: VecDeque::from([i64::from(98), i64::from(98), i64::from(79)]),
+            operation: |x: i64| -> i64 { x + 3 },
+            throw: |x: i64| -> usize {
+                if ((x % 17) as i64).is_zero(){
                     1
                 } else {
                     0
@@ -153,10 +152,10 @@ fn init() -> Vec<Monkey> {
         },
         Monkey {
             n_inspected: 0,
-            items: VecDeque::from([BigInt::from(76)]),
-            operation: |x: BigInt| -> BigInt { x + 4 },
-            throw: |x: BigInt| -> usize {
-                if ((x % 13) as BigInt).is_zero() {
+            items: VecDeque::from([i64::from(76)]),
+            operation: |x: i64| -> i64 { x + 4 },
+            throw: |x: i64| -> usize {
+                if ((x % 13) as i64).is_zero() {
                     6
                 } else {
                     3
@@ -165,10 +164,10 @@ fn init() -> Vec<Monkey> {
         },
         Monkey {
             n_inspected: 0,
-            items: VecDeque::from([BigInt::from(52), BigInt::from(51), BigInt::from(84), BigInt::from(54)]),
-            operation: |x: BigInt| -> BigInt { x * 17 },
-            throw: |x: BigInt| -> usize {
-                if ((x % 19) as BigInt).is_zero() {
+            items: VecDeque::from([i64::from(52), i64::from(51), i64::from(84), i64::from(54)]),
+            operation: |x: i64| -> i64 { x * 17 },
+            throw: |x: i64| -> usize {
+                if ((x % 19) as i64).is_zero() {
                     4
                 } else {
                     1
@@ -177,10 +176,10 @@ fn init() -> Vec<Monkey> {
         },
         Monkey {
             n_inspected: 0,
-            items: VecDeque::from([BigInt::from(82), BigInt::from(86), BigInt::from(91), BigInt::from(79), BigInt::from(94), BigInt::from(92), BigInt::from(59), BigInt::from(94)]),
-            operation: |x: BigInt| -> BigInt { x + 7 },
-            throw: |x: BigInt| -> usize {
-                if ((x % 2) as BigInt).is_zero() {
+            items: VecDeque::from([i64::from(82), i64::from(86), i64::from(91), i64::from(79), i64::from(94), i64::from(92), i64::from(59), i64::from(94)]),
+            operation: |x: i64| -> i64 { x + 7 },
+            throw: |x: i64| -> usize {
+                if ((x % 2) as i64).is_zero() {
                     5
                 } else {
                     3
