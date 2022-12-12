@@ -1,5 +1,30 @@
 use priority_queue::DoublePriorityQueue;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
+use colored::Colorize;
+
+fn draw_path(graph: &Vec<&str>, prev: HashMap<(usize, usize), (usize, usize)>, target: (usize, usize)) {
+    let mut in_path = HashSet::new();
+    let mut curr = target;
+    in_path.insert(target);
+    // println!("{} {} {}", "or use".cyan(), "any".italic().yellow(), "string type".cyan());
+
+    while prev.contains_key(&curr) {
+        curr = prev[&curr];
+        in_path.insert(curr);
+    }
+
+    for i in 0..graph.len() {
+        for j in 0..graph[0].len() {
+            let c = char_at(graph, (i,j));
+            if in_path.contains(&(i,j)) {
+                print!("{}", c.to_string().blue())
+            } else {
+                print!("{}", c)
+            }
+        }
+        print!("\n");
+    }
+}
 
 fn char_at(graph: &Vec<&str>, point: (usize, usize)) -> char {
     let mut c = graph[point.0].chars().nth(point.1).unwrap();
@@ -47,9 +72,10 @@ fn get_neighbours(graph: &Vec<&str>, point: (usize, usize)) -> Vec<(usize, usize
     ret
 }
 
-fn dijkstra(graph: &Vec<&str>, source: (usize, usize)) -> HashMap<(usize, usize), u32> {
+fn dijkstra(graph: &Vec<&str>, source: (usize, usize)) -> (HashMap<(usize, usize), u32>, HashMap<(usize, usize), (usize, usize)>) {
     let mut pq = DoublePriorityQueue::new();
     let mut dists = HashMap::new();
+    let mut prev: HashMap<(usize, usize), (usize, usize)> = HashMap::new();
     dists.insert(source, 0 as u32);
     pq.push(source, 0 as u32);
 
@@ -59,16 +85,13 @@ fn dijkstra(graph: &Vec<&str>, source: (usize, usize)) -> HashMap<(usize, usize)
             let n_dist = dists[&curr] + 1;
             if !dists.contains_key(&neighbour) || n_dist < dists[&neighbour]{
                 dists.insert(neighbour, n_dist);
+                prev.insert(neighbour, curr);
                 pq.push(neighbour, n_dist);
             }
         }
     }
 
-    dists
-
-    // println!("\n\n{:?} {:?} {:?}", source, target, dists);
-
-    // Some(dists[&target])
+    (dists, prev)
 }
 
 fn parse_input(input: &str) -> (Vec<&str>, (usize, usize), (usize, usize)) {
@@ -93,32 +116,38 @@ fn parse_input(input: &str) -> (Vec<&str>, (usize, usize), (usize, usize)) {
 pub fn part_one(input: &str) -> Option<u32> {
     let (graph, source, target) = parse_input(input);
 
-    let dists = dijkstra(&graph, source);
+    let (dists, prev) = dijkstra(&graph, source);
+
+    draw_path(&graph, prev, target);
 
     return Some(dists[&target])
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    let (graph, _source, target) = parse_input(input);
+    let (graph, source, target) = parse_input(input);
+
+    let source_dists = dijkstra(&graph, source);
 
     let mut min_dist = 999999999;
+    let mut min_source: (usize, usize) = (0,0);
+    let mut min_prev: HashMap<(usize, usize), (usize, usize)> = HashMap::new();
     for i in 0..graph.len() {
-        for j in 0..graph[0].len() {
-            let point = (i,j);
+        let point = (i,0);
 
-            if char_at(&graph, point) == 'a' {
-                let dists = dijkstra(&graph, point);
-                if !dists.contains_key(&target) {
-                    continue;
-                }
-                // println!("point: {:?} char: {} dist: {}", point, char_at(&graph, point), dists[&target]);
-
-                if dists[&target] < min_dist {
-                    min_dist = dists[&target];
-                }
+        if char_at(&graph, point) == 'a' {
+            let (dists, prev) = dijkstra(&graph, point);
+            if !dists.contains_key(&target) {
+                continue;
+            }
+            if dists[&target] < min_dist {
+                min_dist = dists[&target];
+                min_source = point;
+                min_prev = prev;
             }
         }
     }
+
+    draw_path(&graph, min_prev, target);
 
     Some(min_dist as u32)
 }
